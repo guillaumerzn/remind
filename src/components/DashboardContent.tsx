@@ -235,8 +235,8 @@ export default function DashboardContent() {
     }
   }
 
-  const upcomingAppointments = appointments.filter(appointment => !isPast(parseISO(appointment.date)))
-  const pastAppointments = appointments.filter(appointment => isPast(parseISO(appointment.date)))
+  const upcomingAppointments = appointments.filter(appointment => !isPast(subHours(parseISO(appointment.date), 2)))
+  const pastAppointments = appointments.filter(appointment => isPast(subHours(parseISO(appointment.date), 2)))
 
   return (
     <div className="min-h-screen bg-white">      
