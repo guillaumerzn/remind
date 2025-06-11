@@ -1,4 +1,5 @@
 # Remind - rappels pour personnes âgées
 
-The arduino code is in the root of the project "./remind.ino"
-The rest of the code is the nextjs UI interface deployed at https://remind-self.vercel.app/ (better for phones).
+Le code arduino est à la racine du projet et se nomme "./remind.ino".
+
+Le reste du code est l'interface Next.JS déployée sur le lien suivant : https://remind-self.vercel.app/ (adapté pour les téléphones).
