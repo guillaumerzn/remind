@@ -222,7 +222,7 @@ export default function DashboardContent() {
     setEditingAppointment(null)
   }
 
-  const handleDeleteAppointment = async (appointmentId: string) => {
+  const handleDeleteAppointment = async (appointmentId: number) => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) return
 
     const { error } = await supabase.from('rdv').delete().eq('id', appointmentId)
