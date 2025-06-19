@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import type { User, Appointment } from '@/lib/supabase'
-import { Users, Calendar, ArrowLeft, Plus, Clock, Edit2, ChevronRight, Stethoscope, Pill, Heart, Dumbbell, MoreHorizontal } from 'lucide-react'
+import { Users, Calendar, ArrowLeft, Plus, Clock, Edit2, ChevronRight, Stethoscope, Pill, Heart, Dumbbell, MoreHorizontal, Trash2 } from 'lucide-react'
 import { format, parseISO, subHours, isPast } from 'date-fns'
 
 // Mapping des boîtiers pour chaque patient
@@ -222,6 +222,16 @@ export default function DashboardContent() {
     setEditingAppointment(null)
   }
 
+  const handleDeleteAppointment = async (appointmentId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) return
+
+    const { error } = await supabase.from('rdv').delete().eq('id', appointmentId)
+
+    if (error) return
+
+    if (selectedUser) fetchAppointments(selectedUser.uuid)
+  }
+
   const goBack = () => {
     if (currentView === 'create-details') {
       setCurrentView('create-type')
@@ -339,12 +349,26 @@ export default function DashboardContent() {
                           <h4 className="font-semibold text-gray-900 text-lg flex-1">
                             {appointment.titre}
                           </h4>
-                          <button
-                            onClick={() => handleEditAppointment(appointment)}
-                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleEditAppointment(appointment)
+                              }}
+                              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleDeleteAppointment(appointment.id)
+                              }}
+                              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                         <p className="text-gray-700 mb-3">{appointment.contenu}</p>
                         <div className="flex items-center gap-2 text-gray-600 font-medium">
@@ -366,7 +390,18 @@ export default function DashboardContent() {
                   <div className="space-y-3">
                     {pastAppointments.map((appointment) => (
                       <div key={appointment.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200 opacity-60">
-                        <h4 className="font-semibold text-gray-900 mb-2">{appointment.titre}</h4>
+                        <div className="flex items-start justify-between mb-2">
+                          <h4 className="font-semibold text-gray-900 flex-1">{appointment.titre}</h4>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDeleteAppointment(appointment.id)
+                            }}
+                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                         <p className="text-gray-700 mb-3">{appointment.contenu}</p>
                         <div className="flex items-center gap-2 text-gray-500 text-sm">
                           <Clock className="w-4 h-4" />
